@@ -2,7 +2,8 @@
 
 ## Scope
 
-- This repo has no root workspace tooling. Run commands inside `front-end/` or `back-end/`.
+- This repo has no root workspace tooling. Run app commands inside `front-end/` or `back-end/`.
+- The repo root does contain `compose.yaml` for local MongoDB; use that or the backend DB scripts when you need the local database.
 - Ignore both package `README.md` files for setup details; they are starter boilerplate and disagree with the actual scripts/config.
 - Paths below are package-relative unless a section explicitly says otherwise.
 
@@ -10,7 +11,9 @@
 
 - Install dependencies separately in `front-end/` and `back-end/` with `npm install`.
 - Before starting the backend, copy `back-end/.env.dist` to `back-end/.env` and set `MONGO_URI`, `JWT_SECRET`, `JWT_EXPIRATION_TIME`, `FRONTEND_DOMAIN`, and `FRONTEND_URL`.
-- For full-stack local work, start the backend first with `npm run start:dev` in `back-end/` on port `3000`, then start the frontend with `npm run dev` in `front-end/` on port `3001`.
+- Start local MongoDB before the backend, either with `docker compose up -d mongodb` from the repo root or `npm run start:db` in `back-end/`.
+- The committed `compose.yaml` exposes MongoDB on `127.0.0.1:27017` and persists data in the named Docker volume `mongodb-data`.
+- For full-stack local work, start MongoDB first, then the backend with `npm run start:dev` in `back-end/` on port `3000`, then the frontend with `npm run dev` in `front-end/` on port `3001`.
 
 ## Frontend (`front-end/`)
 
@@ -27,6 +30,7 @@
 
 - App: NestJS GraphQL + Mongoose in `src`. Real entrypoints are `src/main.ts` and `src/app.module.ts`.
 - Dev server: `npm run start:dev` on port `3000`.
+- Local DB helpers: `npm run start:db`, `npm run stop:db`, `npm run stop:db:rm` delegate to the root `compose.yaml` MongoDB service.
 - Read-only checks: `npm run check`, `npm test -- --runTestsByPath <path-to-spec>`, `npm run build`.
 - `npm run lint` runs ESLint with `--fix` and can modify files; treat it as a mutating cleanup command, not a pure check.
 - Required env is documented in `.env.dist`: `MONGO_URI`, `JWT_SECRET`, `JWT_EXPIRATION_TIME`, `FRONTEND_DOMAIN`, `FRONTEND_URL`.
