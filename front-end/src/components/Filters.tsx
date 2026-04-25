@@ -1,6 +1,6 @@
-import { Flex, NumberInput, TextInput } from "@mantine/core";
-import { IconCurrencyEuro, IconWalk } from "@tabler/icons-react";
-import { Dispatch, SetStateAction } from "react";
+import { Flex, NumberInput, TextInput } from '@mantine/core';
+import { IconCurrencyEuro, IconWalk } from '@tabler/icons-react';
+import { Dispatch, SetStateAction } from 'react';
 
 interface FiltersProps {
   activity: string | undefined;
@@ -20,12 +20,12 @@ export function Filters({
       gap="md"
       direction="column"
       sx={(tm) => ({
-        width: "100%",
+        width: '100%',
         borderRadius: tm.radius.md,
         backgroundColor: tm.colors.gray[2],
         padding: tm.spacing.md,
-        position: "sticky",
-        top: "10px",
+        position: 'sticky',
+        top: '10px',
       })}
     >
       <TextInput

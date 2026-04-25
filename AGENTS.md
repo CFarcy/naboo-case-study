@@ -21,9 +21,9 @@
 
 - App: Next.js 13 pages router in `src/pages`, shared UI/state under `src/components`, `src/contexts`, `src/hocs`, and `src/hooks`.
 - Dev server: `npm run dev` on port `3001`.
-- Read-only checks: `npm run check`, `npm run lint`, `npm test -- --run <path-to-test>`, `npm run build`.
+- Read-only checks: `npm run check`, `npm run lint`, `npm run format:check`, `npm test -- --run <path-to-test>`, `npm run build`.
 - Path alias `@/*` maps to `src/*`.
-- Apollo is wired in `src/graphql/apollo.ts`; the GraphQL endpoint is hard-coded to `http://localhost:3000/graphql` with `credentials: "include"`.
+- Apollo is wired in `src/graphql/apollo.ts`; the GraphQL endpoint reads from `NEXT_PUBLIC_GRAPHQL_URL` and falls back to `http://localhost:3000/graphql` with `credentials: "include"`.
 - If you add authenticated SSR queries, follow `src/pages/my-activities.tsx` and `src/pages/activities/[id].tsx`: forward `req.headers.cookie` in the Apollo query context.
 - `npm run generate-types` copies `../back-end/schema.gql` into `src/graphql/schema.gql` and then runs GraphQL codegen against that local schema file. A running backend is only needed if `back-end/schema.gql` itself is stale (e.g., after backend schema changes); regenerate it by starting the backend, then run `npm run generate-types`.
 
@@ -32,8 +32,8 @@
 - App: NestJS GraphQL + Mongoose in `src`. Real entrypoints are `src/main.ts` and `src/app.module.ts`.
 - Dev server: `npm run start:dev` on port `3000`.
 - Local DB helpers: `npm run start:db`, `npm run stop:db`, `npm run stop:db:rm` delegate to the root `compose.yaml` MongoDB service. Root equivalents also exist via `make db-up`, `make db-down`, and `make db-reset`.
-- Read-only checks: `npm run check`, `npm test -- --runTestsByPath <path-to-spec>`, `npm run build`.
-- `npm run lint` runs ESLint with `--fix` and can modify files; treat it as a mutating cleanup command, not a pure check.
+- Read-only checks: `npm run check`, `npm run lint`, `npm test -- --runTestsByPath <path-to-spec>`, `npm run build`.
+- `npm run lint:fix` runs ESLint with `--fix` and can modify files; use it as an explicit mutating cleanup command.
 - Required env is documented in `.env.dist`: `MONGO_URI`, `JWT_SECRET`, `JWT_EXPIRATION_TIME`, `FRONTEND_DOMAIN`, `FRONTEND_URL`.
 - `src/main.ts` sets a global REST prefix of `/api`, but GraphQL requests still go to `/graphql`.
 - GraphQL schema is auto-generated to `schema.gql`; playground is enabled in `src/app.module.ts`.

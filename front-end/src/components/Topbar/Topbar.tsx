@@ -1,11 +1,11 @@
-import { useAuth } from "@/hooks";
-import { Burger, Container, Group, Header } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import Link from "next/link";
-import { MenuItem } from "./MenuItem";
-import { useTopbarStyles } from "./Topbar.styles";
-import { getFilteredRoutes } from "./getFilteredRoutes";
-import { Route } from "./types";
+import { useAuth } from '@/hooks';
+import { Burger, Container, Group, Header } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import Link from 'next/link';
+import { MenuItem } from './MenuItem';
+import { useTopbarStyles } from './Topbar.styles';
+import { getFilteredRoutes } from './getFilteredRoutes';
+import { Route } from './types';
 
 interface TopbarProps {
   routes: Route[];

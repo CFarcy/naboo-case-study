@@ -1,5 +1,5 @@
-import gql from "graphql-tag";
-import OwnerFragment from "./owner";
+import gql from 'graphql-tag';
+import OwnerFragment from './owner';
 
 const ActivityFragment = gql`
   fragment Activity on Activity {

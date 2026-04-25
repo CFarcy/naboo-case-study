@@ -1,22 +1,22 @@
-import { useDebounced, useSnackbar } from "@/hooks";
-import { searchCity } from "@/services";
-import { Box, Button, Group, Select, TextInput, Textarea } from "@mantine/core";
-import { useForm } from "@mantine/form";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useDebounced, useSnackbar } from '@/hooks';
+import { searchCity } from '@/services';
+import { Box, Button, Group, Select, TextInput, Textarea } from '@mantine/core';
+import { useForm } from '@mantine/form';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import {
   cityValidation,
   descriptionValidation,
   nameValidation,
   priceValidation,
-} from "./validationRules";
-import { useMutation } from "@apollo/client";
-import CreateActivity from "@/graphql/mutations/activity/createActivity";
+} from './validationRules';
+import { useMutation } from '@apollo/client';
+import CreateActivity from '@/graphql/mutations/activity/createActivity';
 import {
   CreateActivityInput,
   CreateActivityMutation,
   CreateActivityMutationVariables,
-} from "@/graphql/generated/types";
+} from '@/graphql/generated/types';
 
 type SelectData = {
   value: string;
@@ -25,7 +25,7 @@ type SelectData = {
 
 export default function ActivityForm() {
   const snackbar = useSnackbar();
-  const [searchValue, setSearchValue] = useState("");
+  const [searchValue, setSearchValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const debouncedSearch = useDebounced(searchValue, 300);
   const [displayedCities, setDisplayedCities] = useState<SelectData[]>([]);
@@ -38,9 +38,9 @@ export default function ActivityForm() {
 
   const form = useForm<CreateActivityInput>({
     initialValues: {
-      name: "",
-      description: "",
-      city: "",
+      name: '',
+      description: '',
+      city: '',
       price: 0,
     },
     validate: {
@@ -58,7 +58,7 @@ export default function ActivityForm() {
           setDisplayedCities(data.map((d) => ({ value: d.nom, label: d.nom })));
         })
         .catch((err) => {
-          snackbar.error(err?.message || "Une erreur est survenue");
+          snackbar.error(err?.message || 'Une erreur est survenue');
         });
     }
   }, [debouncedSearch, searchValue, snackbar]);
@@ -73,7 +73,7 @@ export default function ActivityForm() {
       });
       router.back();
     } catch (err) {
-      snackbar.error("Une erreur est survenue");
+      snackbar.error('Une erreur est survenue');
     } finally {
       setIsLoading(false);
     }
@@ -86,13 +86,13 @@ export default function ActivityForm() {
           withAsterisk
           label="Nom de l'activité"
           placeholder="Session Yoga"
-          {...form.getInputProps("name")}
+          {...form.getInputProps('name')}
         />
         <Textarea
           withAsterisk
           label="Description"
           placeholder="Description de l'activité"
-          {...form.getInputProps("description")}
+          {...form.getInputProps('description')}
         />
         <Select
           withAsterisk
@@ -102,14 +102,14 @@ export default function ActivityForm() {
           onSearchChange={setSearchValue}
           searchValue={searchValue}
           data={displayedCities}
-          {...form.getInputProps("city")}
+          {...form.getInputProps('city')}
         />
         <TextInput
           withAsterisk
           label="Prix"
           placeholder="50"
           type="number"
-          {...form.getInputProps("price")}
+          {...form.getInputProps('price')}
         />
         <Group position="right" mt="md">
           <Button loading={isLoading} type="submit">

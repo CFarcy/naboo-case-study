@@ -9,18 +9,18 @@ import {
   SigninMutationVariables,
   SignupMutation,
   SignupMutationVariables,
-} from "@/graphql/generated/types";
-import Logout from "@/graphql/mutations/auth/logout";
-import Signin from "@/graphql/mutations/auth/signin";
-import Signup from "@/graphql/mutations/auth/signup";
-import GetUser from "@/graphql/queries/auth/getUser";
-import { useSnackbar } from "@/hooks";
-import { useLazyQuery, useMutation } from "@apollo/client";
-import { useRouter } from "next/router";
-import { createContext, useEffect, useState } from "react";
+} from '@/graphql/generated/types';
+import Logout from '@/graphql/mutations/auth/logout';
+import Signin from '@/graphql/mutations/auth/signin';
+import Signup from '@/graphql/mutations/auth/signup';
+import GetUser from '@/graphql/queries/auth/getUser';
+import { useSnackbar } from '@/hooks';
+import { useLazyQuery, useMutation } from '@apollo/client';
+import { useRouter } from 'next/router';
+import { createContext, useEffect, useState } from 'react';
 
 interface AuthContextType {
-  user: GetUserQuery["getMe"] | null;
+  user: GetUserQuery['getMe'] | null;
   isLoading: boolean;
   handleSignin: (input: SignInInput) => Promise<void>;
   handleSignup: (input: SignUpInput) => Promise<void>;
@@ -42,7 +42,7 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const snackbar = useSnackbar();
   const [isLoading, setIsLoading] = useState(true);
-  const [user, setUser] = useState<GetUserQuery["getMe"] | null>(null);
+  const [user, setUser] = useState<GetUserQuery['getMe'] | null>(null);
   const router = useRouter();
 
   const [getUser] = useLazyQuery<GetUserQuery, GetUserQueryVariables>(GetUser);
@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [logout] = useMutation<LogoutMutation, LogoutMutationVariables>(Logout);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem('token');
 
     if (!user && token) {
       getUser()
@@ -66,12 +66,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     try {
       setIsLoading(true);
       const response = await signin({ variables: { signInInput: input } });
-      const token = response.data?.login?.access_token || "";
-      localStorage.setItem("token", token);
+      const token = response.data?.login?.access_token || '';
+      localStorage.setItem('token', token);
       await getUser().then((res) => setUser(res.data?.getMe || null));
-      router.push("/profil");
+      router.push('/profil');
     } catch (err) {
-      snackbar.error("Une erreur est survenue");
+      snackbar.error('Une erreur est survenue');
     } finally {
       setIsLoading(false);
     }
@@ -81,9 +81,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     try {
       setIsLoading(true);
       await signup({ variables: { signUpInput: input } });
-      router.push("/signin");
+      router.push('/signin');
     } catch (err) {
-      snackbar.error("Une erreur est survenue");
+      snackbar.error('Une erreur est survenue');
     } finally {
       setIsLoading(false);
     }
@@ -93,11 +93,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     try {
       setIsLoading(true);
       await logout();
-      localStorage.removeItem("token");
+      localStorage.removeItem('token');
       setUser(null);
-      router.push("/");
+      router.push('/');
     } catch (err) {
-      snackbar.error("Une erreur est survenue");
+      snackbar.error('Une erreur est survenue');
     } finally {
       setIsLoading(false);
     }

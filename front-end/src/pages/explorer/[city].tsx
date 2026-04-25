@@ -1,20 +1,20 @@
-import { ActivityListItem, EmptyData, Filters, PageTitle } from "@/components";
-import { graphqlClient } from "@/graphql/apollo";
+import { ActivityListItem, EmptyData, Filters, PageTitle } from '@/components';
+import { graphqlClient } from '@/graphql/apollo';
 import {
   GetActivitiesByCityQuery,
   GetActivitiesByCityQueryVariables,
-} from "@/graphql/generated/types";
-import GetActivitiesByCity from "@/graphql/queries/activity/getActivitiesByCity";
-import { useDebounced } from "@/hooks";
-import { Divider, Flex, Grid } from "@mantine/core";
-import { GetServerSideProps } from "next";
-import Head from "next/head";
-import { useSearchParams } from "next/navigation";
-import { useRouter } from "next/router";
-import { Fragment, useEffect, useState } from "react";
+} from '@/graphql/generated/types';
+import GetActivitiesByCity from '@/graphql/queries/activity/getActivitiesByCity';
+import { useDebounced } from '@/hooks';
+import { Divider, Flex, Grid } from '@mantine/core';
+import { GetServerSideProps } from 'next';
+import Head from 'next/head';
+import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/router';
+import { Fragment, useEffect, useState } from 'react';
 
 interface CityDetailsProps {
-  activities: GetActivitiesByCityQuery["getActivitiesByCity"];
+  activities: GetActivitiesByCityQuery['getActivitiesByCity'];
   city: string;
 }
 
@@ -54,12 +54,12 @@ export default function ActivityDetails({
   const searchParams = useSearchParams();
 
   const [searchActivity, setSearchActivity] = useState<string | undefined>(
-    searchParams?.get("activity") || undefined
+    searchParams?.get('activity') || undefined,
   );
   const debouncedSearchActivity = useDebounced(searchActivity, 300);
 
   const [searchPrice, setSearchPrice] = useState<number | undefined>(
-    searchParams?.get("price") ? Number(searchParams.get("price")) : undefined
+    searchParams?.get('price') ? Number(searchParams.get('price')) : undefined,
   );
   const debouncedSearchPrice = useDebounced(searchPrice, 300);
 
@@ -67,13 +67,13 @@ export default function ActivityDetails({
     const searchParams = new URLSearchParams();
 
     if (debouncedSearchActivity !== undefined)
-      searchParams.set("activity", debouncedSearchActivity);
+      searchParams.set('activity', debouncedSearchActivity);
 
     if (debouncedSearchPrice !== undefined)
-      searchParams.set("price", debouncedSearchPrice.toString());
+      searchParams.set('price', debouncedSearchPrice.toString());
 
     const stringParams = searchParams.toString();
-    router.push(`/explorer/${city}${stringParams ? `?${stringParams}` : ""}`);
+    router.push(`/explorer/${city}${stringParams ? `?${stringParams}` : ''}`);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [city, debouncedSearchActivity, debouncedSearchPrice]);

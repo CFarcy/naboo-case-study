@@ -1,17 +1,17 @@
-import { PageTitle } from "@/components";
-import { graphqlClient } from "@/graphql/apollo";
+import { PageTitle } from '@/components';
+import { graphqlClient } from '@/graphql/apollo';
 import {
   GetActivityQuery,
   GetActivityQueryVariables,
-} from "@/graphql/generated/types";
-import GetActivity from "@/graphql/queries/activity/getActivity";
-import { Badge, Flex, Grid, Group, Image, Text } from "@mantine/core";
-import { GetServerSideProps } from "next";
-import Head from "next/head";
-import { useRouter } from "next/router";
+} from '@/graphql/generated/types';
+import GetActivity from '@/graphql/queries/activity/getActivity';
+import { Badge, Flex, Grid, Group, Image, Text } from '@mantine/core';
+import { GetServerSideProps } from 'next';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
 
 interface ActivityDetailsProps {
-  activity: GetActivityQuery["getActivity"];
+  activity: GetActivityQuery['getActivity'];
 }
 
 export const getServerSideProps: GetServerSideProps<

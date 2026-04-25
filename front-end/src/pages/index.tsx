@@ -1,18 +1,18 @@
-import { Activity, PageTitle } from "@/components";
-import { graphqlClient } from "@/graphql/apollo";
-import { useGlobalStyles } from "@/utils";
-import { Button, Flex, Grid, Text } from "@mantine/core";
-import { GetServerSideProps } from "next";
-import Head from "next/head";
-import Link from "next/link";
+import { Activity, PageTitle } from '@/components';
+import { graphqlClient } from '@/graphql/apollo';
+import { useGlobalStyles } from '@/utils';
+import { Button, Flex, Grid, Text } from '@mantine/core';
+import { GetServerSideProps } from 'next';
+import Head from 'next/head';
+import Link from 'next/link';
 import {
   GetLatestActivitiesQuery,
   GetLatestActivitiesQueryVariables,
-} from "@/graphql/generated/types";
-import GetLatestActivities from "@/graphql/queries/activity/getLatestActivities";
+} from '@/graphql/generated/types';
+import GetLatestActivities from '@/graphql/queries/activity/getLatestActivities';
 
 interface HomeProps {
-  activities: GetLatestActivitiesQuery["getLatestActivities"];
+  activities: GetLatestActivitiesQuery['getLatestActivities'];
 }
 
 export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {

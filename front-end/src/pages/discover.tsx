@@ -1,18 +1,18 @@
-import { Activity, EmptyData, PageTitle } from "@/components";
-import { graphqlClient } from "@/graphql/apollo";
+import { Activity, EmptyData, PageTitle } from '@/components';
+import { graphqlClient } from '@/graphql/apollo';
 import {
   GetActivitiesQuery,
   GetActivitiesQueryVariables,
-} from "@/graphql/generated/types";
-import GetActivities from "@/graphql/queries/activity/getActivities";
-import { useAuth } from "@/hooks";
-import { Button, Grid, Group } from "@mantine/core";
-import { GetServerSideProps } from "next";
-import Head from "next/head";
-import Link from "next/link";
+} from '@/graphql/generated/types';
+import GetActivities from '@/graphql/queries/activity/getActivities';
+import { useAuth } from '@/hooks';
+import { Button, Grid, Group } from '@mantine/core';
+import { GetServerSideProps } from 'next';
+import Head from 'next/head';
+import Link from 'next/link';
 
 interface DiscoverProps {
-  activities: GetActivitiesQuery["getActivities"];
+  activities: GetActivitiesQuery['getActivities'];
 }
 
 export const getServerSideProps: GetServerSideProps<
