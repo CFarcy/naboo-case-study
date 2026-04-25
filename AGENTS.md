@@ -43,6 +43,6 @@
 ## Verification
 
 - Backend tests use `mongodb-memory-server` via `src/test/test.module.ts`; they do not need a local MongoDB.
-- A targeted backend Jest run can pass and still hang with open handles after completion. Treat that separately from assertion failures.
+- Backend tests use `mongodb-memory-server`; teardown is handled in `src/test/test.module.ts`.
 - Prefer the smallest relevant checks while iterating, but before finishing run the relevant package checks for the files you changed.
 - If you touch routing, build config, GraphQL wiring, or imports across package boundaries, include `npm run build` in the relevant package before finishing.
