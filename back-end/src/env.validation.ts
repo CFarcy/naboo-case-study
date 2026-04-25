@@ -1,47 +1,47 @@
 import { z } from 'zod';
 
+function trimmedNonEmpty(message: string) {
+  return z.string().transform((s) => s.trim()).pipe(z.string().min(1, message));
+}
+
 const envSchema = z.object({
-  MONGO_URI: z.string().min(1, 'MONGO_URI is required'),
-  JWT_SECRET: z.string().min(1, 'JWT_SECRET is required'),
-  JWT_EXPIRATION_TIME: z.string().min(1, 'JWT_EXPIRATION_TIME is required'),
-  FRONTEND_DOMAIN: z
-    .string()
-    .min(1, 'FRONTEND_DOMAIN is required')
-    .refine(
-      (value) =>
-        value === 'localhost' ||
-        (/^[a-z0-9.-]+$/i.test(value) &&
-          !value.includes(':') &&
-          !value.includes('/')),
-      {
-        message:
-          'FRONTEND_DOMAIN must be a bare hostname (no scheme, no path, no port)',
-      },
-    ),
-  FRONTEND_URL: z
-    .string()
-    .min(1, 'FRONTEND_URL is required')
-    .refine(
-      (value) => {
-        try {
-          const url = new URL(value);
-          return (
-            (url.protocol === 'http:' || url.protocol === 'https:') &&
-            url.pathname === '/' &&
-            url.search === '' &&
-            url.hash === '' &&
-            url.username === '' &&
-            url.password === ''
-          );
-        } catch {
-          return false;
-        }
-      },
-      {
-        message:
-          'FRONTEND_URL must be a valid http(s) origin (no path, query, hash, or auth)',
-      },
-    ),
+  MONGO_URI: trimmedNonEmpty('MONGO_URI is required'),
+  JWT_SECRET: trimmedNonEmpty('JWT_SECRET is required'),
+  JWT_EXPIRATION_TIME: trimmedNonEmpty('JWT_EXPIRATION_TIME is required'),
+  FRONTEND_DOMAIN: trimmedNonEmpty(
+    'FRONTEND_DOMAIN is required',
+  ).refine(
+    (value) =>
+      value === 'localhost' ||
+      (/^[a-z0-9.-]+$/i.test(value) &&
+        !value.includes(':') &&
+        !value.includes('/')),
+    {
+      message:
+        'FRONTEND_DOMAIN must be a bare hostname (no scheme, no path, no port)',
+    },
+  ),
+  FRONTEND_URL: trimmedNonEmpty('FRONTEND_URL is required').refine(
+    (value) => {
+      try {
+        const url = new URL(value);
+        return (
+          (url.protocol === 'http:' || url.protocol === 'https:') &&
+          url.pathname === '/' &&
+          url.search === '' &&
+          url.hash === '' &&
+          url.username === '' &&
+          url.password === ''
+        );
+      } catch {
+        return false;
+      }
+    },
+    {
+      message:
+        'FRONTEND_URL must be a valid http(s) origin (no path, query, hash, or auth)',
+    },
+  ),
   PORT: z.coerce.number().int().min(1).max(65535).default(3000),
 });
 
