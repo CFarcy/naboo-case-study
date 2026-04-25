@@ -1,0 +1,44 @@
+# AGENTS.md
+
+## Scope
+
+- This repo has no root workspace tooling. Run commands inside `front-end/` or `back-end/`.
+- Ignore both package `README.md` files for setup details; they are starter boilerplate and disagree with the actual scripts/config.
+- Paths below are package-relative unless a section explicitly says otherwise.
+
+## Setup
+
+- Install dependencies separately in `front-end/` and `back-end/` with `npm install`.
+- Before starting the backend, copy `back-end/.env.dist` to `back-end/.env` and set `MONGO_URI`, `JWT_SECRET`, `JWT_EXPIRATION_TIME`, `FRONTEND_DOMAIN`, and `FRONTEND_URL`.
+- For full-stack local work, start the backend first with `npm run start:dev` in `back-end/` on port `3000`, then start the frontend with `npm run dev` in `front-end/` on port `3001`.
+
+## Frontend (`front-end/`)
+
+- App: Next.js 13 pages router in `src/pages`, shared UI/state under `src/components`, `src/contexts`, `src/hocs`, and `src/hooks`.
+- Dev server: `npm run dev` on port `3001`.
+- Read-only checks: `npm run check`, `npm run lint`, `npm test -- --run <path-to-test>`, `npm run build`.
+- Path alias `@/*` maps to `src/*`.
+- Apollo is wired in `src/graphql/apollo.ts`; the GraphQL endpoint is hard-coded to `http://localhost:3000/graphql` with `credentials: "include"`.
+- If you add authenticated SSR queries, follow `src/pages/my-activities.tsx` and `src/pages/activities/[id].tsx`: forward `req.headers.cookie` in the Apollo query context.
+- `npm run generate-types` copies `../back-end/schema.gql` into `src/graphql/schema.gql` and then runs GraphQL codegen, but `codegen.yml` still points at the live backend URL `http://localhost:3000/graphql`. Do not assume codegen is fully offline.
+- If you change backend GraphQL schema or frontend GraphQL operations, run `npm run generate-types`; because `codegen.yml` still hits the live backend URL, the backend may need to be running.
+
+## Backend (`back-end/`)
+
+- App: NestJS GraphQL + Mongoose in `src`. Real entrypoints are `src/main.ts` and `src/app.module.ts`.
+- Dev server: `npm run start:dev` on port `3000`.
+- Read-only checks: `npm run check`, `npm test -- --runTestsByPath <path-to-spec>`, `npm run build`.
+- `npm run lint` runs ESLint with `--fix` and can modify files; treat it as a mutating cleanup command, not a pure check.
+- Required env is documented in `.env.dist`: `MONGO_URI`, `JWT_SECRET`, `JWT_EXPIRATION_TIME`, `FRONTEND_DOMAIN`, `FRONTEND_URL`.
+- `src/main.ts` sets a global REST prefix of `/api`, but GraphQL requests still go to `/graphql`.
+- GraphQL schema is auto-generated to `schema.gql`; playground is enabled in `src/app.module.ts`.
+- Auth context accepts either a `jwt` header or the `jwt` cookie. `login` and `logout` set or clear that cookie in `src/auth/auth.resolver.ts`.
+- The app seeds data on every bootstrap through `AppService.onApplicationBootstrap() -> SeedService.execute()`. The seed is idempotent for the bundled default users, but starting the backend is not a "no side effects" action.
+
+## Verification
+
+- Backend tests use `mongodb-memory-server` via `src/test/test.module.ts`; they do not need a local MongoDB.
+- A targeted backend Jest run can pass and still hang with open handles after completion. Treat that separately from assertion failures.
+- `npm run test:e2e` in `back-end/` currently finds no tests: `test/jest-e2e.json` matches `*.e2e-spec.ts`, but the repo's e2e file is `src/app.e2e.spec.ts`.
+- Prefer the smallest relevant checks while iterating, but before finishing run the relevant package checks for the files you changed.
+- If you touch routing, build config, GraphQL wiring, or imports across package boundaries, include `npm run build` in the relevant package before finishing.
