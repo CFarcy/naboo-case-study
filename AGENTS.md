@@ -25,8 +25,7 @@
 - Path alias `@/*` maps to `src/*`.
 - Apollo is wired in `src/graphql/apollo.ts`; the GraphQL endpoint is hard-coded to `http://localhost:3000/graphql` with `credentials: "include"`.
 - If you add authenticated SSR queries, follow `src/pages/my-activities.tsx` and `src/pages/activities/[id].tsx`: forward `req.headers.cookie` in the Apollo query context.
-- `npm run generate-types` copies `../back-end/schema.gql` into `src/graphql/schema.gql` and then runs GraphQL codegen, but `codegen.yml` still points at the live backend URL `http://localhost:3000/graphql`. Do not assume codegen is fully offline.
-- If you change backend GraphQL schema or frontend GraphQL operations, run `npm run generate-types`; because `codegen.yml` still hits the live backend URL, the backend may need to be running.
+- `npm run generate-types` copies `../back-end/schema.gql` into `src/graphql/schema.gql` and then runs GraphQL codegen against that local schema file. A running backend is only needed if `back-end/schema.gql` itself is stale (e.g., after backend schema changes); regenerate it by starting the backend, then run `npm run generate-types`.
 
 ## Backend (`back-end/`)
 
@@ -45,6 +44,5 @@
 
 - Backend tests use `mongodb-memory-server` via `src/test/test.module.ts`; they do not need a local MongoDB.
 - A targeted backend Jest run can pass and still hang with open handles after completion. Treat that separately from assertion failures.
-- `npm run test:e2e` in `back-end/` currently finds no tests: `test/jest-e2e.json` matches `*.e2e-spec.ts`, but the repo's e2e file is `src/app.e2e.spec.ts`.
 - Prefer the smallest relevant checks while iterating, but before finishing run the relevant package checks for the files you changed.
 - If you touch routing, build config, GraphQL wiring, or imports across package boundaries, include `npm run build` in the relevant package before finishing.
