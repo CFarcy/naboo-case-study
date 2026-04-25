@@ -15,7 +15,9 @@ export class AuthResolver {
     const data = await this.authService.signIn(loginUserDto);
     ctx.res.cookie('jwt', data.access_token, {
       httpOnly: true,
-      domain: process.env.FRONTEND_DOMAIN,
+      ...(process.env.FRONTEND_DOMAIN !== 'localhost'
+        ? { domain: process.env.FRONTEND_DOMAIN }
+        : {}),
     });
 
     return data;
@@ -32,7 +34,9 @@ export class AuthResolver {
   async logout(@Context() ctx: any): Promise<boolean> {
     ctx.res.clearCookie('jwt', {
       httpOnly: true,
-      domain: process.env.FRONTEND_DOMAIN,
+      ...(process.env.FRONTEND_DOMAIN !== 'localhost'
+        ? { domain: process.env.FRONTEND_DOMAIN }
+        : {}),
     });
     return true;
   }
