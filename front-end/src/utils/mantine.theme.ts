@@ -1,6 +1,6 @@
-import { MantineThemeOverride } from "@mantine/core";
+import { MantineThemeOverride } from '@mantine/core';
 
 export const mantineTheme: MantineThemeOverride = {
-  colorScheme: "light",
-  primaryColor: "teal",
+  colorScheme: 'light',
+  primaryColor: 'teal',
 };

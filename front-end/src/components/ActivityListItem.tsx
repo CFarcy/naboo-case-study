@@ -1,7 +1,7 @@
-import { ActivityFragment } from "@/graphql/generated/types";
-import { useGlobalStyles } from "@/utils";
-import { Box, Button, Flex, Image, Text } from "@mantine/core";
-import Link from "next/link";
+import { ActivityFragment } from '@/graphql/generated/types';
+import { useGlobalStyles } from '@/utils';
+import { Box, Button, Flex, Image, Text } from '@mantine/core';
+import Link from 'next/link';
 
 interface ActivityListItemProps {
   activity: ActivityFragment;
@@ -20,7 +20,7 @@ export function ActivityListItem({ activity }: ActivityListItemProps) {
           height="125"
           width="125"
         />
-        <Box sx={{ maxWidth: "300px" }}>
+        <Box sx={{ maxWidth: '300px' }}>
           <Text className={classes.ellipsis}>{activity.city}</Text>
           <Text className={classes.ellipsis}>{activity.name}</Text>
           <Text className={classes.ellipsis}>{activity.description}</Text>

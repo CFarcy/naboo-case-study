@@ -9,7 +9,7 @@ A full-stack case-study application with a NestJS/GraphQL/Mongoose backend and a
 
 ## Prerequisites
 
-- [Node.js](https://nodejs.org/)
+- [Node.js](https://nodejs.org/) (see `.nvmrc` for the version)
 - [Docker](https://www.docker.com/) (for local MongoDB)
 
 ## Fresh-clone setup
@@ -125,7 +125,8 @@ All commands can be run from the repo root via `make`, or inside the package dir
 |--------|---------|
 | `npm run start:dev` | Dev server with watch |
 | `npm run check` | TypeScript type check (`tsc --noEmit`) |
-| `npm run lint` | ESLint with `--fix` |
+| `npm run lint` | ESLint (read-only) |
+| `npm run lint:fix` | ESLint with `--fix` |
 | `npm run test` | Jest unit tests |
 | `npm run test:e2e` | Jest e2e tests |
 | `npm run build` | Production build |
@@ -140,6 +141,8 @@ All commands can be run from the repo root via `make`, or inside the package dir
 | `npm run dev` | Dev server on port 3001 |
 | `npm run check` | TypeScript type check (`tsc --noEmit`) |
 | `npm run lint` | Next.js ESLint |
+| `npm run format` | Prettier format |
+| `npm run format:check` | Prettier check (read-only) |
 | `npm run test` | Vitest |
 | `npm run build` | Production build |
 | `npm run generate-types` | Copy schema and run GraphQL codegen |
@@ -152,6 +155,9 @@ All commands can be run from the repo root via `make`, or inside the package dir
 ├── front-end/         # Next.js frontend
 ├── compose.yaml       # Docker Compose: local MongoDB
 ├── Makefile           # Root command surface
+├── .editorconfig      # Shared editor settings
+├── .nvmrc             # Node version
+├── .prettierrc        # Shared Prettier config
 └── README.md          # This file
 ```
 

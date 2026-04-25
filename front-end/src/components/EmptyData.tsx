@@ -1,6 +1,6 @@
-import { Flex } from "@mantine/core";
-import Image from "next/image";
-import emptyDataSvg from "../../public/images/undraw_no_data_re_kwbl.svg";
+import { Flex } from '@mantine/core';
+import Image from 'next/image';
+import emptyDataSvg from '../../public/images/undraw_no_data_re_kwbl.svg';
 
 export function EmptyData() {
   return (

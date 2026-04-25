@@ -1,2 +1,2 @@
-export * from "./authContext";
-export * from "./snackbarContext";
+export * from './authContext';
+export * from './snackbarContext';

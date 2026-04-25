@@ -1,13 +1,14 @@
-import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
+import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 
 const GRAPHQL_URL =
-  process.env.NEXT_PUBLIC_GRAPHQL_URL?.trim() || "http://localhost:3000/graphql";
+  process.env.NEXT_PUBLIC_GRAPHQL_URL?.trim() ||
+  'http://localhost:3000/graphql';
 
 export const graphqlClient = new ApolloClient({
   cache: new InMemoryCache(),
   link: new HttpLink({
     uri: GRAPHQL_URL,
-    credentials: "include",
+    credentials: 'include',
   }),
-  ssrMode: typeof window === "undefined",
+  ssrMode: typeof window === 'undefined',
 });

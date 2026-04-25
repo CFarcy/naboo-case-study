@@ -1,14 +1,14 @@
-import { ActionIcon, Center, Menu } from "@mantine/core";
-import { IconChevronDown } from "@tabler/icons-react";
-import Link from "next/link";
-import { useTopbarStyles } from "./Topbar.styles";
-import { Route } from "./types";
+import { ActionIcon, Center, Menu } from '@mantine/core';
+import { IconChevronDown } from '@tabler/icons-react';
+import Link from 'next/link';
+import { useTopbarStyles } from './Topbar.styles';
+import { Route } from './types';
 
 export function MenuItem({ route, label, icon }: Route) {
   const Icon = icon;
   const { classes } = useTopbarStyles();
 
-  return typeof route === "string" ? (
+  return typeof route === 'string' ? (
     <Link href={route} className={classes.link}>
       {Icon ? (
         <ActionIcon>

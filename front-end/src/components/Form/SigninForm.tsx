@@ -1,16 +1,16 @@
-import { useAuth } from "@/hooks";
-import { Box, Button, TextInput } from "@mantine/core";
-import { useForm } from "@mantine/form";
-import Link from "next/link";
-import { emailValidation, passwordValidation } from "./validationRules";
-import { SignInInput } from "@/graphql/generated/types";
+import { useAuth } from '@/hooks';
+import { Box, Button, TextInput } from '@mantine/core';
+import { useForm } from '@mantine/form';
+import Link from 'next/link';
+import { emailValidation, passwordValidation } from './validationRules';
+import { SignInInput } from '@/graphql/generated/types';
 
 export default function SigninForm() {
   const { handleSignin, isLoading } = useAuth();
   const form = useForm<SignInInput>({
     initialValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
     validate: {
       email: emailValidation,
@@ -25,18 +25,18 @@ export default function SigninForm() {
           withAsterisk
           label="Email"
           placeholder="your@email.com"
-          {...form.getInputProps("email")}
+          {...form.getInputProps('email')}
         />
         <TextInput
           withAsterisk
           label="Mot de passe"
           placeholder="*****"
           type="password"
-          {...form.getInputProps("password")}
+          {...form.getInputProps('password')}
         />
-        <Box mt="md" sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Box mt="md" sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Link href="/signup">
-            <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
               <span>Vous n&apos;avez pas encore de compte ?</span>
               <span>S&apos;inscrire</span>
             </Box>

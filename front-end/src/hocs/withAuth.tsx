@@ -1,7 +1,7 @@
-import { useAuth } from "@/hooks";
-import { Box, Loader } from "@mantine/core";
-import { useRouter } from "next/router";
-import { ComponentType, useEffect } from "react";
+import { useAuth } from '@/hooks';
+import { Box, Loader } from '@mantine/core';
+import { useRouter } from 'next/router';
+import { ComponentType, useEffect } from 'react';
 
 export function withAuth(WrappedComponent: ComponentType<any>) {
   // eslint-disable-next-line react/display-name
@@ -11,14 +11,14 @@ export function withAuth(WrappedComponent: ComponentType<any>) {
 
     useEffect(() => {
       if (!isLoading && !user) {
-        router.push("/signin");
+        router.push('/signin');
       }
     }, [isLoading, router, user]);
 
     if (isLoading)
       return (
-        <Box sx={{ textAlign: "center" }}>
-          <Loader sx={{ marginTop: "10rem" }} />
+        <Box sx={{ textAlign: 'center' }}>
+          <Loader sx={{ marginTop: '10rem' }} />
         </Box>
       );
 

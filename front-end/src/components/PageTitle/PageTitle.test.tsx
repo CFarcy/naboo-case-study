@@ -1,17 +1,17 @@
-import { render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { vi } from "vitest";
-import { PageTitle } from "./PageTitle";
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { vi } from 'vitest';
+import { PageTitle } from './PageTitle';
 
 const getTitle = () =>
-  screen.getByRole("heading", {
+  screen.getByRole('heading', {
     name: /Title/i,
   });
 
-const getButton = () => screen.queryByRole("button");
-const getLink = () => screen.queryByRole("link");
+const getButton = () => screen.queryByRole('button');
+const getLink = () => screen.queryByRole('link');
 
-describe("le composant PageTitle", () => {
+describe('le composant PageTitle', () => {
   it("affiche uniquement le titre si prevPath n'est pas défini", () => {
     render(<PageTitle title="Title" />);
 
@@ -20,7 +20,7 @@ describe("le composant PageTitle", () => {
     expect(getLink()).not.toBeInTheDocument();
   });
 
-  it("affiche uniquement le titre et le composant Link si prevPath est une string", () => {
+  it('affiche uniquement le titre et le composant Link si prevPath est une string', () => {
     render(<PageTitle title="Title" prevPath="/" />);
 
     expect(getTitle()).toBeInTheDocument();

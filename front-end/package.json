@@ -9,7 +9,9 @@
     "check": "tsc --noEmit",
     "lint": "next lint",
     "test": "vitest",
-    "generate-types": "cp ../back-end/schema.gql ./src/graphql/schema.gql && graphql-codegen"
+    "generate-types": "cp ../back-end/schema.gql ./src/graphql/schema.gql && graphql-codegen",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx}\""
   },
   "dependencies": {
     "@apollo/client": "^3.8.8",
@@ -43,6 +45,7 @@
     "eslint-config-next": "13.4.10",
     "jsdom": "^22.1.0",
     "typescript": "5.1.6",
+    "prettier": "^2.8.8",
     "vitest": "^0.33.0"
   }
 }

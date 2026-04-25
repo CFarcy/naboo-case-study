@@ -1,4 +1,4 @@
-import { IconUserCircle } from "@tabler/icons-react";
+import { IconUserCircle } from '@tabler/icons-react';
 
 export type SubRoute = {
   link: string;
