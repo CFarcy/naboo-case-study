@@ -1,8 +1,11 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import * as cookieParser from 'cookie-parser';
+import { config } from 'dotenv';
 import { AppModule } from './app.module';
 import { validateEnv } from './env.validation';
+
+config();
 
 async function bootstrap() {
   validateEnv();
