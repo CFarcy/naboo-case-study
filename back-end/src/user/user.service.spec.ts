@@ -17,7 +17,9 @@ describe('UserService', () => {
   });
 
   afterAll(async () => {
-    await module.close();
+    if (module) {
+      await module.close();
+    }
     await closeInMongodConnection();
   });
 

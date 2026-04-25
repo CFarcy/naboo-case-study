@@ -46,3 +46,4 @@
 - Backend tests use `mongodb-memory-server`; teardown is handled in `src/test/test.module.ts`.
 - Prefer the smallest relevant checks while iterating, but before finishing run the relevant package checks for the files you changed.
 - If you touch routing, build config, GraphQL wiring, or imports across package boundaries, include `npm run build` in the relevant package before finishing.
+- CI runs the documented baseline checks automatically via `.github/workflows/ci.yml`.

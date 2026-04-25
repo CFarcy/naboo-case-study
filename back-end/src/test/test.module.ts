@@ -20,9 +20,12 @@ export const rootMongooseTestModule = (options: MongooseModuleOptions = {}) =>
   });
 
 export const closeInMongodConnection = async () => {
-  await mongoose.disconnect();
-  await Promise.all(Array.from(mongods).map((mongod) => mongod.stop()));
-  mongods.clear();
+  try {
+    await mongoose.disconnect();
+    await Promise.all(Array.from(mongods).map((mongod) => mongod.stop()));
+  } finally {
+    mongods.clear();
+  }
 };
 
 @Module({
