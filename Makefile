@@ -32,10 +32,18 @@ db-reset:
 
 start start-dev:
 	@docker compose -f "$(COMPOSE_FILE)" up -d mongodb
-	@printf '%s\n' "Waiting for mongodb to become healthy..."
-	@until [ "$$(docker inspect -f '{{if .State.Health}}{{.State.Health.Status}}{{else}}running{{end}}' naboo-mongodb 2>/dev/null)" = "healthy" ]; do \
+	@printf '%s\n' "Waiting for naboo-mongodb to become healthy (docker inspect health check)..."
+	@WAIT_SECONDS=60; \
+	count=0; \
+	until [ "$$(docker inspect -f '{{if .State.Health}}{{.State.Health.Status}}{{else}}running{{end}}' naboo-mongodb 2>/dev/null)" = "healthy" ]; do \
+		count=$$((count + 1)); \
+		if [ $$count -ge $$WAIT_SECONDS ]; then \
+			printf '%s\n' "Timeout error: naboo-mongodb did not become healthy within $${WAIT_SECONDS}s. Check 'docker compose ps' and 'docker inspect --format='{{.State.Health}}' naboo-mongodb' for details." >&2; \
+			exit 1; \
+		fi; \
 		sleep 1; \
-	done
+	done; \
+	printf '%s\n' "naboo-mongodb is healthy."
 	@backend_pid=; frontend_pid=; \
 	trap 'status=$$?; \
 		if [ -n "$$backend_pid" ]; then kill $$backend_pid 2>/dev/null || true; fi; \
