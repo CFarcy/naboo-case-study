@@ -7,7 +7,7 @@ import { TestModule, closeInMongodConnection } from './test/test.module';
 
 describe('App e2e', () => {
   let app: INestApplication;
-  beforeEach(async () => {
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [TestModule, BaseAppModule],
     }).compile();
@@ -16,12 +16,9 @@ describe('App e2e', () => {
     await app.init();
   });
 
-  afterEach(async () => {
-    await app.close();
-  });
-
   afterAll(async () => {
-    closeInMongodConnection();
+    await app.close();
+    await closeInMongodConnection();
   });
   it('app should be defined', () => {
     expect(app).toBeDefined();
