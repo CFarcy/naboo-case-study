@@ -24,15 +24,22 @@ const envSchema = z.object({
     .refine(
       (value) => {
         try {
-          // eslint-disable-next-line no-new
-          new URL(value);
-          return true;
+          const url = new URL(value);
+          return (
+            (url.protocol === 'http:' || url.protocol === 'https:') &&
+            url.pathname === '/' &&
+            url.search === '' &&
+            url.hash === '' &&
+            url.username === '' &&
+            url.password === ''
+          );
         } catch {
           return false;
         }
       },
       {
-        message: 'FRONTEND_URL must be a valid URL',
+        message:
+          'FRONTEND_URL must be a valid http(s) origin (no path, query, hash, or auth)',
       },
     ),
   PORT: z.coerce.number().int().min(1).max(65535).default(3000),
