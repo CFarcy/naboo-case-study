@@ -39,8 +39,8 @@ import {
   IconGripVertical,
 } from '@tabler/icons-react';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { BookmarkButton } from '../BookmarkButton';
+import { useEffect, useRef, useState } from 'react';
+import { BookmarkButton } from '@/components/BookmarkButton';
 
 interface BookmarkRowProps {
   activity: ActivityFragment;
@@ -128,6 +128,7 @@ export function BookmarksList() {
     ReorderBookmarksMutation,
     ReorderBookmarksMutationVariables
   >(ReorderBookmarks);
+  const latestRequestId = useRef(0);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -140,13 +141,16 @@ export function BookmarksList() {
 
   const persistOrder = async (next: ActivityFragment[]) => {
     const previous = items;
+    const requestId = ++latestRequestId.current;
     setItems(next);
     try {
       await reorderBookmarks({
         variables: { orderedIds: next.map((b) => b.id) },
       });
     } catch {
-      setItems(previous);
+      if (requestId === latestRequestId.current) {
+        setItems(previous);
+      }
       snackbar.error('Une erreur est survenue');
     }
   };
