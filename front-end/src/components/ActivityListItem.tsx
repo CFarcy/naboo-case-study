@@ -1,7 +1,9 @@
 import { ActivityFragment } from '@/graphql/generated/types';
+import { useAuth } from '@/hooks';
 import { useGlobalStyles } from '@/utils';
 import { Box, Button, Flex, Group, Image, Text } from '@mantine/core';
 import Link from 'next/link';
+import { ActivityMetadata } from './ActivityMetadata';
 import { BookmarkButton } from './BookmarkButton';
 
 interface ActivityListItemProps {
@@ -10,6 +12,9 @@ interface ActivityListItemProps {
 
 export function ActivityListItem({ activity }: ActivityListItemProps) {
   const { classes } = useGlobalStyles();
+  const { user } = useAuth();
+  const showMetadata =
+    user?.role === 'admin' && user?.debugModeEnabled && !!activity.createdAt;
 
   return (
     <Flex align="center" justify="space-between">
@@ -29,6 +34,12 @@ export function ActivityListItem({ activity }: ActivityListItemProps) {
             weight="bold"
             className={classes.ellipsis}
           >{`${activity.price}€/j`}</Text>
+          {showMetadata && (
+            <ActivityMetadata
+              createdAt={activity.createdAt}
+              owner={activity.owner}
+            />
+          )}
         </Box>
       </Flex>
       <Group spacing="xs">

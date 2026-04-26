@@ -15,6 +15,7 @@ const activityFixture = {
   description: 'description',
   name: 'name',
   price: 10,
+  createdAt: '2024-01-01T00:00:00.000Z',
   owner: { __typename: 'User' as const, firstName: 'John', lastName: 'Doe' },
 };
 
@@ -26,6 +27,8 @@ const userFixture = (
   firstName: 'John',
   lastName: 'Doe',
   email: 'john@test.fr',
+  role: 'user',
+  debugModeEnabled: false,
   bookmarks,
 });
 

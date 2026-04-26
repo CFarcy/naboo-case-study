@@ -1,4 +1,4 @@
-import { BookmarksList, PageTitle } from '@/components';
+import { BookmarksList, DebugModeToggle, PageTitle } from '@/components';
 import { withAuth } from '@/hocs';
 import { useAuth } from '@/hooks';
 import { Avatar, Flex, Stack, Text, Title } from '@mantine/core';
@@ -30,6 +30,13 @@ const Profile = () => {
           <Title order={3}>Mes favoris</Title>
           <BookmarksList />
         </Stack>
+
+        {user?.role === 'admin' && (
+          <Stack spacing="md">
+            <Title order={3}>Admin</Title>
+            <DebugModeToggle />
+          </Stack>
+        )}
       </Stack>
     </>
   );

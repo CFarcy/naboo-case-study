@@ -1,7 +1,9 @@
 import { ActivityFragment } from '@/graphql/generated/types';
+import { useAuth } from '@/hooks';
 import { useGlobalStyles } from '@/utils';
 import { Badge, Button, Card, Grid, Group, Image, Text } from '@mantine/core';
 import Link from 'next/link';
+import { ActivityMetadata } from './ActivityMetadata';
 import { BookmarkButton } from './BookmarkButton';
 
 interface ActivityProps {
@@ -10,6 +12,9 @@ interface ActivityProps {
 
 export function Activity({ activity }: ActivityProps) {
   const { classes } = useGlobalStyles();
+  const { user } = useAuth();
+  const showMetadata =
+    user?.role === 'admin' && user?.debugModeEnabled && !!activity.createdAt;
 
   return (
     <Grid.Col span={4}>
@@ -41,6 +46,13 @@ export function Activity({ activity }: ActivityProps) {
         <Text size="sm" color="dimmed" className={classes.ellipsis}>
           {activity.description}
         </Text>
+
+        {showMetadata && (
+          <ActivityMetadata
+            createdAt={activity.createdAt}
+            owner={activity.owner}
+          />
+        )}
 
         <Link href={`/activities/${activity.id}`} className={classes.link}>
           <Button variant="light" color="blue" fullWidth mt="md" radius="md">
