@@ -25,10 +25,13 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type Mutation {
+  addBookmark(activityId: ID!): User!
   createActivity(createActivityInput: CreateActivityInput!): Activity!
   login(signInInput: SignInInput!): SignInDto!
   logout: Boolean!
   register(signUpInput: SignUpInput!): User!
+  removeBookmark(activityId: ID!): User!
+  reorderBookmarks(orderedIds: [ID!]!): User!
 }
 
 type Query {
@@ -58,6 +61,7 @@ input SignUpInput {
 }
 
 type User {
+  bookmarks: [Activity!]!
   email: String!
   firstName: String!
   id: ID!

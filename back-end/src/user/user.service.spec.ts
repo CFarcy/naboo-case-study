@@ -1,12 +1,34 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { BadRequestException } from '@nestjs/common';
+import { getModelToken } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { UserService } from './user.service';
 import { UserModule } from './user.module';
+import { Activity } from 'src/activity/activity.schema';
 import { randomUUID } from 'crypto';
 import { TestModule, closeInMongodConnection } from 'src/test/test.module';
 
 describe('UserService', () => {
   let userService: UserService;
+  let activityModel: Model<Activity>;
   let module: TestingModule;
+
+  const createUser = () =>
+    userService.createUser({
+      email: randomUUID() + '@test.com',
+      password: 'password',
+      firstName: 'firstName',
+      lastName: 'lastName',
+    });
+
+  const createActivity = (ownerId: string) =>
+    activityModel.create({
+      name: 'name',
+      city: 'city',
+      description: 'description',
+      price: 10,
+      owner: ownerId,
+    });
 
   beforeAll(async () => {
     module = await Test.createTestingModule({
@@ -14,6 +36,7 @@ describe('UserService', () => {
     }).compile();
 
     userService = module.get<UserService>(UserService);
+    activityModel = module.get<Model<Activity>>(getModelToken(Activity.name));
   });
 
   afterAll(async () => {
@@ -42,6 +65,75 @@ describe('UserService', () => {
       email,
       firstName: 'firstName',
       lastName: 'lastName',
+    });
+  });
+
+  describe('bookmarks', () => {
+    it('addBookmark appends a new id and is idempotent', async () => {
+      const user = await createUser();
+      const activity = await createActivity(user.id);
+
+      const after1 = await userService.addBookmark(user.id, activity.id);
+      const after2 = await userService.addBookmark(user.id, activity.id);
+
+      expect(after1.bookmarks.map((id) => id.toString())).toEqual([
+        activity.id,
+      ]);
+      expect(after2.bookmarks.map((id) => id.toString())).toEqual([
+        activity.id,
+      ]);
+    });
+
+    it('removeBookmark pulls the id and no-ops when absent', async () => {
+      const user = await createUser();
+      const activity = await createActivity(user.id);
+
+      await userService.addBookmark(user.id, activity.id);
+      const removed = await userService.removeBookmark(user.id, activity.id);
+      const removedAgain = await userService.removeBookmark(
+        user.id,
+        activity.id,
+      );
+
+      expect(removed.bookmarks).toHaveLength(0);
+      expect(removedAgain.bookmarks).toHaveLength(0);
+    });
+
+    it('reorderBookmarks updates the order when set matches', async () => {
+      const user = await createUser();
+      const a = await createActivity(user.id);
+      const b = await createActivity(user.id);
+      const c = await createActivity(user.id);
+
+      await userService.addBookmark(user.id, a.id);
+      await userService.addBookmark(user.id, b.id);
+      await userService.addBookmark(user.id, c.id);
+
+      const reordered = await userService.reorderBookmarks(user.id, [
+        c.id,
+        a.id,
+        b.id,
+      ]);
+
+      expect(reordered.bookmarks.map((id) => id.toString())).toEqual([
+        c.id,
+        a.id,
+        b.id,
+      ]);
+    });
+
+    it('reorderBookmarks rejects a different set', async () => {
+      const user = await createUser();
+      const a = await createActivity(user.id);
+      const b = await createActivity(user.id);
+      const other = await createActivity(user.id);
+
+      await userService.addBookmark(user.id, a.id);
+      await userService.addBookmark(user.id, b.id);
+
+      await expect(
+        userService.reorderBookmarks(user.id, [a.id, other.id]),
+      ).rejects.toBeInstanceOf(BadRequestException);
     });
   });
 });
