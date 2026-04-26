@@ -147,6 +147,13 @@ All commands can be run from the repo root via `make`, or inside the package dir
 | `npm run build` | Production build |
 | `npm run generate-types` | Copy schema and run GraphQL codegen |
 
+## CI
+
+The repository includes a GitHub Actions workflow (`.github/workflows/ci.yml`) that runs the documented quality checks for both packages on every push and pull request to `master`:
+
+- **Backend:** install, type check, lint, test, build
+- **Frontend:** install, type check, lint, test, build
+
 ## Project structure
 
 ```

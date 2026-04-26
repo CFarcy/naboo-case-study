@@ -4,9 +4,10 @@ import { ActivityModule } from './activity.module';
 import { TestModule, closeInMongodConnection } from 'src/test/test.module';
 describe('ActivityService', () => {
   let service: ActivityService;
+  let module: TestingModule;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+  beforeAll(async () => {
+    module = await Test.createTestingModule({
       imports: [TestModule, ActivityModule],
     }).compile();
 
@@ -14,6 +15,9 @@ describe('ActivityService', () => {
   });
 
   afterAll(async () => {
+    if (module) {
+      await module.close();
+    }
     await closeInMongodConnection();
   });
 

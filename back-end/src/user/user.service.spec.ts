@@ -6,9 +6,10 @@ import { TestModule, closeInMongodConnection } from 'src/test/test.module';
 
 describe('UserService', () => {
   let userService: UserService;
+  let module: TestingModule;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+  beforeAll(async () => {
+    module = await Test.createTestingModule({
       imports: [TestModule, UserModule],
     }).compile();
 
@@ -16,6 +17,9 @@ describe('UserService', () => {
   });
 
   afterAll(async () => {
+    if (module) {
+      await module.close();
+    }
     await closeInMongodConnection();
   });
 
