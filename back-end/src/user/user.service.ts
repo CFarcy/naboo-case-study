@@ -9,6 +9,13 @@ import { SignUpInput } from 'src/auth/types';
 import { User } from './user.schema';
 import * as bcrypt from 'bcrypt';
 
+function toObjectId(value: string, fieldName: string): Types.ObjectId {
+  if (!Types.ObjectId.isValid(value)) {
+    throw new BadRequestException(`${fieldName} is not a valid id`);
+  }
+  return new Types.ObjectId(value);
+}
+
 @Injectable()
 export class UserService {
   constructor(
@@ -60,10 +67,11 @@ export class UserService {
   }
 
   async addBookmark(userId: string, activityId: string): Promise<User> {
+    const objectId = toObjectId(activityId, 'activityId');
     const user = await this.userModel
       .findByIdAndUpdate(
         userId,
-        { $addToSet: { bookmarks: new Types.ObjectId(activityId) } },
+        { $addToSet: { bookmarks: objectId } },
         { new: true },
       )
       .exec();
@@ -74,10 +82,11 @@ export class UserService {
   }
 
   async removeBookmark(userId: string, activityId: string): Promise<User> {
+    const objectId = toObjectId(activityId, 'activityId');
     const user = await this.userModel
       .findByIdAndUpdate(
         userId,
-        { $pull: { bookmarks: new Types.ObjectId(activityId) } },
+        { $pull: { bookmarks: objectId } },
         { new: true },
       )
       .exec();
@@ -88,6 +97,7 @@ export class UserService {
   }
 
   async reorderBookmarks(userId: string, orderedIds: string[]): Promise<User> {
+    const nextObjectIds = orderedIds.map((id) => toObjectId(id, 'orderedIds'));
     const user = await this.userModel.findById(userId).exec();
     if (!user) {
       throw new NotFoundException('User not found');
@@ -102,7 +112,7 @@ export class UserService {
         'orderedIds must contain exactly the current bookmark ids',
       );
     }
-    user.bookmarks = orderedIds.map((id) => new Types.ObjectId(id));
+    user.bookmarks = nextObjectIds;
     return user.save();
   }
 

@@ -122,6 +122,20 @@ describe('UserService', () => {
       ]);
     });
 
+    it('rejects malformed activity ids with BadRequestException', async () => {
+      const user = await createUser();
+
+      await expect(
+        userService.addBookmark(user.id, 'not-an-objectid'),
+      ).rejects.toBeInstanceOf(BadRequestException);
+      await expect(
+        userService.removeBookmark(user.id, 'not-an-objectid'),
+      ).rejects.toBeInstanceOf(BadRequestException);
+      await expect(
+        userService.reorderBookmarks(user.id, ['not-an-objectid']),
+      ).rejects.toBeInstanceOf(BadRequestException);
+    });
+
     it('reorderBookmarks rejects a different set', async () => {
       const user = await createUser();
       const a = await createActivity(user.id);
