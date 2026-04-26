@@ -106,8 +106,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const refreshUser = async () => {
-    const res = await getUser({ fetchPolicy: 'network-only' });
-    setUser(res.data?.getMe || null);
+    try {
+      const res = await getUser({ fetchPolicy: 'network-only' });
+      setUser(res.data?.getMe || null);
+    } catch (err) {
+      snackbar.error('Une erreur est survenue');
+    }
   };
 
   return (
