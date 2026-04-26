@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { Types } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UserService } from './user.service';
@@ -120,6 +121,15 @@ describe('UserService', () => {
         a.id,
         b.id,
       ]);
+    });
+
+    it('addBookmark rejects an unknown activity id', async () => {
+      const user = await createUser();
+      const unknownId = new Types.ObjectId().toString();
+
+      await expect(
+        userService.addBookmark(user.id, unknownId),
+      ).rejects.toBeInstanceOf(NotFoundException);
     });
 
     it('rejects malformed activity ids with BadRequestException', async () => {
