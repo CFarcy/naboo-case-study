@@ -8,6 +8,8 @@ const GetUser = gql`
       firstName
       lastName
       email
+      role
+      debugModeEnabled
       bookmarks {
         ...Activity
       }

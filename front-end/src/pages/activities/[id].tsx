@@ -1,5 +1,6 @@
-import { PageTitle } from '@/components';
+import { ActivityMetadata, PageTitle } from '@/components';
 import { graphqlClient } from '@/graphql/apollo';
+import { useAuth } from '@/hooks';
 import {
   GetActivityQuery,
   GetActivityQueryVariables,
@@ -31,6 +32,9 @@ export const getServerSideProps: GetServerSideProps<
 
 export default function ActivityDetails({ activity }: ActivityDetailsProps) {
   const router = useRouter();
+  const { user } = useAuth();
+  const showMetadata =
+    user?.role === 'admin' && user?.debugModeEnabled && !!activity.createdAt;
 
   return (
     <>
@@ -59,9 +63,12 @@ export default function ActivityDetails({ activity }: ActivityDetailsProps) {
               </Badge>
             </Group>
             <Text size="sm">{activity.description}</Text>
-            <Text size="sm" color="dimmed">
-              Ajouté par {activity.owner.firstName} {activity.owner.lastName}
-            </Text>
+            {showMetadata && (
+              <ActivityMetadata
+                createdAt={activity.createdAt}
+                owner={activity.owner}
+              />
+            )}
           </Flex>
         </Grid.Col>
       </Grid>
