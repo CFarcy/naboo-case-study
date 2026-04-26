@@ -146,6 +146,22 @@ describe('UserService', () => {
       ).rejects.toBeInstanceOf(BadRequestException);
     });
 
+    it('setDebugMode toggles the persisted debugModeEnabled field', async () => {
+      const user = await createUser();
+
+      const enabled = await userService.setDebugMode({
+        userId: user.id,
+        enabled: true,
+      });
+      expect(enabled.debugModeEnabled).toBe(true);
+
+      const disabled = await userService.setDebugMode({
+        userId: user.id,
+        enabled: false,
+      });
+      expect(disabled.debugModeEnabled).toBe(false);
+    });
+
     it('reorderBookmarks rejects a different set', async () => {
       const user = await createUser();
       const a = await createActivity(user.id);

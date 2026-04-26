@@ -32,6 +32,7 @@ type Mutation {
   register(signUpInput: SignUpInput!): User!
   removeBookmark(activityId: ID!): User!
   reorderBookmarks(orderedIds: [ID!]!): User!
+  setDebugMode(enabled: Boolean!): User!
 }
 
 type Query {
@@ -62,9 +63,11 @@ input SignUpInput {
 
 type User {
   bookmarks: [Activity!]!
+  debugModeEnabled: Boolean!
   email: String!
   firstName: String!
   id: ID!
   lastName: String!
   password: String!
+  role: String!
 }
