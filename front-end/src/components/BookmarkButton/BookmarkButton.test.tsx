@@ -1,4 +1,4 @@
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider, MockedResponse } from '@apollo/client/testing';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
@@ -34,7 +34,7 @@ const renderWith = ({
   mocks,
 }: {
   user: GetUserQuery['getMe'] | null;
-  mocks: Parameters<typeof MockedProvider>[0]['mocks'];
+  mocks: ReadonlyArray<MockedResponse>;
 }) => {
   const refreshUser = vi.fn().mockResolvedValue(undefined);
   render(

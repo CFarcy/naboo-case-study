@@ -118,7 +118,7 @@ function BookmarkRow({ activity, index, total, onMove }: BookmarkRowProps) {
 }
 
 export function BookmarksList() {
-  const { user, refreshUser } = useAuth();
+  const { user } = useAuth();
   const snackbar = useSnackbar();
   const [items, setItems] = useState<ActivityFragment[]>(
     user?.bookmarks ?? [],
@@ -145,7 +145,6 @@ export function BookmarksList() {
       await reorderBookmarks({
         variables: { orderedIds: next.map((b) => b.id) },
       });
-      await refreshUser();
     } catch {
       setItems(previous);
       snackbar.error('Une erreur est survenue');
