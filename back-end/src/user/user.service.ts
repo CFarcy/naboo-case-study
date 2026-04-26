@@ -1,15 +1,29 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { SignUpInput } from 'src/auth/types';
+import { Activity } from 'src/activity/activity.schema';
 import { User } from './user.schema';
 import * as bcrypt from 'bcrypt';
+
+function toObjectId(value: string, fieldName: string): Types.ObjectId {
+  if (!Types.ObjectId.isValid(value)) {
+    throw new BadRequestException(`${fieldName} is not a valid id`);
+  }
+  return new Types.ObjectId(value);
+}
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name)
     private userModel: Model<User>,
+    @InjectModel(Activity.name)
+    private activityModel: Model<Activity>,
   ) {}
 
   async getByEmail(email: string): Promise<User> {
@@ -53,6 +67,62 @@ export class UserService {
 
   async countDocuments(): Promise<number> {
     return this.userModel.countDocuments().exec();
+  }
+
+  async addBookmark(userId: string, activityId: string): Promise<User> {
+    const objectId = toObjectId(activityId, 'activityId');
+    const activityExists = await this.activityModel
+      .exists({ _id: objectId })
+      .exec();
+    if (!activityExists) {
+      throw new NotFoundException('Activity not found');
+    }
+    const user = await this.userModel
+      .findByIdAndUpdate(
+        userId,
+        { $addToSet: { bookmarks: objectId } },
+        { new: true },
+      )
+      .exec();
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
+  }
+
+  async removeBookmark(userId: string, activityId: string): Promise<User> {
+    const objectId = toObjectId(activityId, 'activityId');
+    const user = await this.userModel
+      .findByIdAndUpdate(
+        userId,
+        { $pull: { bookmarks: objectId } },
+        { new: true },
+      )
+      .exec();
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
+  }
+
+  async reorderBookmarks(userId: string, orderedIds: string[]): Promise<User> {
+    const nextObjectIds = orderedIds.map((id) => toObjectId(id, 'orderedIds'));
+    const user = await this.userModel.findById(userId).exec();
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    const current = user.bookmarks.map((id) => id.toString()).sort();
+    const next = nextObjectIds.map((id) => id.toString()).sort();
+    const sameSet =
+      current.length === next.length &&
+      current.every((id, i) => id === next[i]);
+    if (!sameSet) {
+      throw new BadRequestException(
+        'orderedIds must contain exactly the current bookmark ids',
+      );
+    }
+    user.bookmarks = nextObjectIds;
+    return user.save();
   }
 
   async setDebugMode({
