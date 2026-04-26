@@ -25,6 +25,7 @@ interface AuthContextType {
   handleSignin: (input: SignInInput) => Promise<void>;
   handleSignup: (input: SignUpInput) => Promise<void>;
   handleLogout: () => Promise<void>;
+  refreshUser: () => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextType>({
@@ -33,6 +34,7 @@ export const AuthContext = createContext<AuthContextType>({
   handleSignin: () => Promise.resolve(),
   handleSignup: () => Promise.resolve(),
   handleLogout: () => Promise.resolve(),
+  refreshUser: () => Promise.resolve(),
 });
 
 interface AuthProviderProps {
@@ -103,9 +105,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
+  const refreshUser = async () => {
+    const res = await getUser({ fetchPolicy: 'network-only' });
+    setUser(res.data?.getMe || null);
+  };
+
   return (
     <AuthContext.Provider
-      value={{ user, isLoading, handleSignin, handleSignup, handleLogout }}
+      value={{
+        user,
+        isLoading,
+        handleSignin,
+        handleSignup,
+        handleLogout,
+        refreshUser,
+      }}
     >
       {children}
     </AuthContext.Provider>

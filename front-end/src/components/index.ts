@@ -1,5 +1,7 @@
 export * from './Activity';
 export * from './ActivityListItem';
+export * from './BookmarkButton';
+export * from './BookmarksList';
 export * from './City';
 export * from './EmptyData';
 export * from './Filters';

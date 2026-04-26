@@ -2,6 +2,7 @@ import { ActivityFragment } from '@/graphql/generated/types';
 import { useGlobalStyles } from '@/utils';
 import { Badge, Button, Card, Grid, Group, Image, Text } from '@mantine/core';
 import Link from 'next/link';
+import { BookmarkButton } from './BookmarkButton';
 
 interface ActivityProps {
   activity: ActivityFragment;
@@ -21,10 +22,11 @@ export function Activity({ activity }: ActivityProps) {
           />
         </Card.Section>
 
-        <Group position="apart" mt="md" mb="xs">
+        <Group position="apart" mt="md" mb="xs" noWrap>
           <Text weight={500} className={classes.ellipsis}>
             {activity.name}
           </Text>
+          <BookmarkButton activityId={activity.id} />
         </Group>
 
         <Group mt="md" mb="xs">

@@ -1,13 +1,10 @@
 import ActivityFragment from '@/graphql/fragments/activity';
 import gql from 'graphql-tag';
 
-const GetUser = gql`
-  query GetUser {
-    getMe {
+const AddBookmark = gql`
+  mutation AddBookmark($activityId: ID!) {
+    addBookmark(activityId: $activityId) {
       id
-      firstName
-      lastName
-      email
       bookmarks {
         ...Activity
       }
@@ -16,4 +13,4 @@ const GetUser = gql`
   ${ActivityFragment}
 `;
 
-export default GetUser;
+export default AddBookmark;
