@@ -8,7 +8,11 @@ export function safeSSR<P extends { [key: string]: any }>(
       return await handler(context);
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.error(`[SSR] ${context.resolvedUrl} failed:`, error);
+      console.error(`[SSR] ${context.resolvedUrl} failed`, {
+        params: context.params,
+        query: context.query,
+        error,
+      });
       return { notFound: true };
     }
   };

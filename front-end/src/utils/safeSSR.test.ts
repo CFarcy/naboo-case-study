@@ -29,17 +29,28 @@ describe('safeSSR', () => {
     expect(result).toEqual({ props: { value: 42 } });
   });
 
-  it('returns notFound and logs when the handler throws', async () => {
+  it('returns notFound and logs structured context when the handler throws', async () => {
+    const error = new Error('backend down');
     const handler = safeSSR(async () => {
-      throw new Error('backend down');
+      throw error;
     });
 
-    const result = await handler(ctx({ resolvedUrl: '/my-activities' }));
+    const result = await handler(
+      ctx({
+        resolvedUrl: '/explorer/Paris?activity=hike',
+        params: { city: 'Paris' },
+        query: { activity: 'hike' },
+      }),
+    );
 
     expect(result).toEqual({ notFound: true });
     expect(errorSpy).toHaveBeenCalledWith(
-      expect.stringContaining('/my-activities'),
-      expect.any(Error),
+      expect.stringContaining('/explorer/Paris'),
+      {
+        params: { city: 'Paris' },
+        query: { activity: 'hike' },
+        error,
+      },
     );
   });
 

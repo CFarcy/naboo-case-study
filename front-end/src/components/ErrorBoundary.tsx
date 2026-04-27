@@ -1,9 +1,11 @@
 import { Button, Container, Stack, Text, Title } from '@mantine/core';
 import { Component, ErrorInfo, ReactNode } from 'react';
 
+type ErrorBoundaryFallback = ReactNode | ((reset: () => void) => ReactNode);
+
 interface ErrorBoundaryProps {
   children: ReactNode;
-  fallback?: ReactNode;
+  fallback?: ErrorBoundaryFallback;
 }
 
 interface ErrorBoundaryState {
@@ -34,8 +36,10 @@ export class ErrorBoundary extends Component<
       return this.props.children;
     }
 
-    if (this.props.fallback) {
-      return this.props.fallback;
+    if (this.props.fallback !== undefined) {
+      return typeof this.props.fallback === 'function'
+        ? this.props.fallback(this.handleReset)
+        : this.props.fallback;
     }
 
     return (

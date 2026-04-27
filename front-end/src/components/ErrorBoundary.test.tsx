@@ -57,6 +57,37 @@ describe('ErrorBoundary', () => {
     expect(screen.getByText('custom-fallback')).toBeInTheDocument();
   });
 
+  it('passes the reset handler to a render-prop fallback', async () => {
+    const Wrapper = () => {
+      const [explode, setExplode] = useState(true);
+      return (
+        <>
+          <button onClick={() => setExplode(false)}>fix</button>
+          <ErrorBoundary
+            fallback={(reset) => (
+              <button onClick={reset}>custom-retry</button>
+            )}
+          >
+            <Boom explode={explode} />
+          </ErrorBoundary>
+        </>
+      );
+    };
+
+    renderWithMantine(<Wrapper />);
+
+    expect(
+      screen.getByRole('button', { name: /custom-retry/i }),
+    ).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole('button', { name: /fix/i }));
+    await userEvent.click(
+      screen.getByRole('button', { name: /custom-retry/i }),
+    );
+
+    expect(screen.getByText('safe')).toBeInTheDocument();
+  });
+
   it('recovers when the user clicks Réessayer and the child no longer throws', async () => {
     const Wrapper = () => {
       const [explode, setExplode] = useState(true);

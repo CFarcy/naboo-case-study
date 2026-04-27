@@ -13,12 +13,12 @@ export default function App({ Component, pageProps }: AppProps) {
       <SnackbarProvider>
         <ApolloProvider client={graphqlClient}>
           <AuthProvider>
-            <Topbar routes={routes} />
-            <Container>
-              <ErrorBoundary>
+            <ErrorBoundary>
+              <Topbar routes={routes} />
+              <Container>
                 <Component {...pageProps} />
-              </ErrorBoundary>
-            </Container>
+              </Container>
+            </ErrorBoundary>
           </AuthProvider>
         </ApolloProvider>
       </SnackbarProvider>

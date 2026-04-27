@@ -29,6 +29,10 @@ export const getServerSideProps: GetServerSideProps<CityDetailsProps> =
     )
       return { notFound: true };
 
+    const parsedPrice = query.price ? parseFloat(query.price as string) : null;
+    const price =
+      parsedPrice !== null && Number.isFinite(parsedPrice) ? parsedPrice : null;
+
     const response = await graphqlClient.query<
       GetActivitiesByCityQuery,
       GetActivitiesByCityQueryVariables
@@ -37,7 +41,7 @@ export const getServerSideProps: GetServerSideProps<CityDetailsProps> =
       variables: {
         city: params.city,
         activity: query.activity || null,
-        price: query.price ? Number(query.price) : null,
+        price,
       },
     });
     return {
