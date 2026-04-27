@@ -12,7 +12,6 @@ import {
 import { UseGuards } from '@nestjs/common';
 import { ActivityService } from './activity.service';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { UserService } from 'src/user/user.service';
 import { Activity } from './activity.schema';
 
 import { CreateActivityInput } from './activity.inputs.dto';
@@ -21,10 +20,7 @@ import { ContextWithJWTPayload } from 'src/auth/types/context';
 
 @Resolver(() => Activity)
 export class ActivityResolver {
-  constructor(
-    private readonly activityService: ActivityService,
-    private readonly userServices: UserService,
-  ) {}
+  constructor(private readonly activityService: ActivityService) {}
 
   @ResolveField(() => ID)
   id(@Parent() activity: Activity): string {
@@ -32,9 +28,11 @@ export class ActivityResolver {
   }
 
   @ResolveField(() => User)
-  async owner(@Parent() activity: Activity): Promise<User> {
-    await activity.populate('owner');
-    return activity.owner;
+  async owner(
+    @Parent() activity: Activity,
+    @Context() context: ContextWithJWTPayload,
+  ): Promise<User> {
+    return context.loaders.userById.load(String(activity.owner));
   }
 
   @Query(() => [Activity])

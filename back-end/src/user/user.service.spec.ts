@@ -161,7 +161,44 @@ describe('UserService', () => {
       });
       expect(disabled.debugModeEnabled).toBe(false);
     });
+  });
 
+  describe('findManyByIds', () => {
+    it('returns users in the same order as input ids, with null for missing', async () => {
+      const a = await createUser();
+      const b = await createUser();
+      const missing = new Types.ObjectId().toString();
+
+      const result = await userService.findManyByIds([b.id, missing, a.id]);
+
+      expect(result.map((u) => u?.id ?? null)).toEqual([b.id, null, a.id]);
+    });
+
+    it('issues a single find query for N ids', async () => {
+      const a = await createUser();
+      const b = await createUser();
+      const c = await createUser();
+
+      const userModel = userService['userModel'] as Model<unknown>;
+      const findSpy = jest.spyOn(userModel, 'find');
+
+      await userService.findManyByIds([a.id, b.id, c.id]);
+
+      expect(findSpy).toHaveBeenCalledTimes(1);
+      findSpy.mockRestore();
+    });
+
+    it('skips invalid ids without throwing', async () => {
+      const a = await createUser();
+
+      const result = await userService.findManyByIds(['not-an-id', a.id]);
+
+      expect(result[0]).toBeNull();
+      expect(result[1]?.id).toBe(a.id);
+    });
+  });
+
+  describe('bookmarks (cont.)', () => {
     it('reorderBookmarks rejects a different set', async () => {
       const user = await createUser();
       const a = await createActivity(user.id);
