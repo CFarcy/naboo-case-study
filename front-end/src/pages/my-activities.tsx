@@ -7,6 +7,7 @@ import {
 import GetUserActivities from '@/graphql/queries/activity/getUserActivities';
 import { withAuth } from '@/hocs';
 import { useAuth } from '@/hooks';
+import { safeSSR } from '@/utils';
 import { Button, Grid, Group } from '@mantine/core';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
@@ -16,18 +17,17 @@ interface MyActivitiesProps {
   activities: GetUserActivitiesQuery['getActivitiesByUser'];
 }
 
-export const getServerSideProps: GetServerSideProps<
-  MyActivitiesProps
-> = async ({ req }) => {
-  const response = await graphqlClient.query<
-    GetUserActivitiesQuery,
-    GetUserActivitiesQueryVariables
-  >({
-    query: GetUserActivities,
-    context: { headers: { Cookie: req.headers.cookie } },
+export const getServerSideProps: GetServerSideProps<MyActivitiesProps> =
+  safeSSR(async ({ req }) => {
+    const response = await graphqlClient.query<
+      GetUserActivitiesQuery,
+      GetUserActivitiesQueryVariables
+    >({
+      query: GetUserActivities,
+      context: { headers: { Cookie: req.headers.cookie } },
+    });
+    return { props: { activities: response.data.getActivitiesByUser } };
   });
-  return { props: { activities: response.data.getActivitiesByUser } };
-};
 
 const MyActivities = ({ activities }: MyActivitiesProps) => {
   const { user } = useAuth();

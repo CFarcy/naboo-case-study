@@ -1,4 +1,4 @@
-import { Topbar } from '@/components';
+import { ErrorBoundary, Topbar } from '@/components';
 import { AuthProvider, SnackbarProvider } from '@/contexts';
 import { routes } from '@/routes';
 import { graphqlClient } from '@/graphql/apollo';
@@ -13,10 +13,12 @@ export default function App({ Component, pageProps }: AppProps) {
       <SnackbarProvider>
         <ApolloProvider client={graphqlClient}>
           <AuthProvider>
-            <Topbar routes={routes} />
-            <Container>
-              <Component {...pageProps} />
-            </Container>
+            <ErrorBoundary>
+              <Topbar routes={routes} />
+              <Container>
+                <Component {...pageProps} />
+              </Container>
+            </ErrorBoundary>
           </AuthProvider>
         </ApolloProvider>
       </SnackbarProvider>

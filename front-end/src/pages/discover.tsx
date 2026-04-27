@@ -6,6 +6,7 @@ import {
 } from '@/graphql/generated/types';
 import GetActivities from '@/graphql/queries/activity/getActivities';
 import { useAuth } from '@/hooks';
+import { safeSSR } from '@/utils';
 import { Button, Grid, Group } from '@mantine/core';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
@@ -15,17 +16,17 @@ interface DiscoverProps {
   activities: GetActivitiesQuery['getActivities'];
 }
 
-export const getServerSideProps: GetServerSideProps<
-  DiscoverProps
-> = async () => {
-  const response = await graphqlClient.query<
-    GetActivitiesQuery,
-    GetActivitiesQueryVariables
-  >({
-    query: GetActivities,
-  });
-  return { props: { activities: response.data.getActivities } };
-};
+export const getServerSideProps: GetServerSideProps<DiscoverProps> = safeSSR(
+  async () => {
+    const response = await graphqlClient.query<
+      GetActivitiesQuery,
+      GetActivitiesQueryVariables
+    >({
+      query: GetActivities,
+    });
+    return { props: { activities: response.data.getActivities } };
+  },
+);
 
 export default function Discover({ activities }: DiscoverProps) {
   const { user } = useAuth();
