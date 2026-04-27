@@ -34,11 +34,11 @@
 - Local DB helpers: `npm run start:db`, `npm run stop:db`, `npm run stop:db:rm` delegate to the root `compose.yaml` MongoDB service. Root equivalents also exist via `make db-up`, `make db-down`, and `make db-reset`.
 - Read-only checks: `npm run check`, `npm run lint`, `npm test -- --runTestsByPath <path-to-spec>`, `npm run build`.
 - `npm run lint:fix` runs ESLint with `--fix` and can modify files; use it as an explicit mutating cleanup command.
-- Required env is documented in `.env.dist`: `MONGO_URI`, `JWT_SECRET`, `JWT_EXPIRATION_TIME`, `FRONTEND_DOMAIN`, `FRONTEND_URL`.
+- Required env is documented in `.env.dist`: `MONGO_URI`, `JWT_SECRET`, `JWT_EXPIRATION_TIME`, `FRONTEND_DOMAIN`, `FRONTEND_URL`. `SEED_ON_BOOT` is optional (defaults to `false`; only `true`/`false` accepted).
 - `src/main.ts` sets a global REST prefix of `/api`, but GraphQL requests still go to `/graphql`.
 - GraphQL schema is auto-generated to `schema.gql`; playground is enabled in `src/app.module.ts`.
 - Auth context accepts either a `jwt` header or the `jwt` cookie. `login` and `logout` set or clear that cookie in `src/auth/auth.resolver.ts`.
-- The app seeds data on every bootstrap through `AppService.onApplicationBootstrap() -> SeedService.execute()`. The seed is idempotent for the bundled default users, but starting the backend is not a "no side effects" action.
+- Seeding is gated on the `SEED_ON_BOOT` env var (default `false`). When set to `true`, `AppService.onApplicationBootstrap()` calls `SeedService.execute()`. The seed is idempotent for the bundled default users.
 
 ## Verification
 
