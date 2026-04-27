@@ -1,10 +1,13 @@
 import { Module, UnauthorizedException } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { ActivityModule } from './activity/activity.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { GqlThrottlerGuard } from './auth/gql-throttler.guard';
 import { MeModule } from './me/me.module';
 import { SeedModule } from './seed/seed.module';
 import { SeedService } from './seed/seed.service';
@@ -18,6 +21,7 @@ import { PayloadDto } from './auth/types/jwtPayload.dto';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    ThrottlerModule.forRoot([{ ttl: 60_000, limit: 10 }]),
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
       imports: [JwtModule],
@@ -63,7 +67,11 @@ import { PayloadDto } from './auth/types/jwtPayload.dto';
     SeedModule,
   ],
   controllers: [AppController],
-  providers: [AppService, SeedService],
+  providers: [
+    AppService,
+    SeedService,
+    { provide: APP_GUARD, useClass: GqlThrottlerGuard },
+  ],
 })
 export class BaseAppModule {}
 

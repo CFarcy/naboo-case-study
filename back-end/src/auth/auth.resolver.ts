@@ -1,8 +1,11 @@
 import { Resolver, Mutation, Args, Context } from '@nestjs/graphql';
+import { Throttle } from '@nestjs/throttler';
 import { CookieOptions } from 'express';
 import { SignInDto, SignInInput, SignUpInput } from './types';
 import { AuthService } from './auth.service';
 import { User } from 'src/user/user.schema';
+
+const AUTH_THROTTLE = { default: { ttl: 60_000, limit: 5 } };
 
 const buildJwtCookieOptions = (): CookieOptions => ({
   httpOnly: true,
@@ -17,6 +20,7 @@ const buildJwtCookieOptions = (): CookieOptions => ({
 export class AuthResolver {
   constructor(private authService: AuthService) {}
 
+  @Throttle(AUTH_THROTTLE)
   @Mutation(() => SignInDto)
   async login(
     @Args('signInInput') loginUserDto: SignInInput,
@@ -27,6 +31,7 @@ export class AuthResolver {
     return data;
   }
 
+  @Throttle(AUTH_THROTTLE)
   @Mutation(() => User)
   async register(
     @Args('signUpInput') createUserDto: SignUpInput,
