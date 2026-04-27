@@ -6,6 +6,7 @@ export * from './BookmarksList';
 export * from './City';
 export * from './DebugModeToggle';
 export * from './EmptyData';
+export * from './ErrorBoundary';
 export * from './Filters';
 export * from './Form';
 export * from './PageTitle';

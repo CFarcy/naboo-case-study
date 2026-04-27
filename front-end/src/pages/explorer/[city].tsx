@@ -6,6 +6,7 @@ import {
 } from '@/graphql/generated/types';
 import GetActivitiesByCity from '@/graphql/queries/activity/getActivitiesByCity';
 import { useDebounced } from '@/hooks';
+import { safeSSR } from '@/utils';
 import { Divider, Flex, Grid } from '@mantine/core';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
@@ -18,33 +19,34 @@ interface CityDetailsProps {
   city: string;
 }
 
-export const getServerSideProps: GetServerSideProps<CityDetailsProps> = async ({
-  params,
-  query,
-}) => {
-  if (!params?.city || Array.isArray(params.city)) return { notFound: true };
+export const getServerSideProps: GetServerSideProps<CityDetailsProps> =
+  safeSSR<CityDetailsProps>(async ({ params, query }) => {
+    if (!params?.city || Array.isArray(params.city)) return { notFound: true };
 
-  if (
-    (query.activity && Array.isArray(query.activity)) ||
-    (query.price && Array.isArray(query.price))
-  )
-    return { notFound: true };
+    if (
+      (query.activity && Array.isArray(query.activity)) ||
+      (query.price && Array.isArray(query.price))
+    )
+      return { notFound: true };
 
-  const response = await graphqlClient.query<
-    GetActivitiesByCityQuery,
-    GetActivitiesByCityQueryVariables
-  >({
-    query: GetActivitiesByCity,
-    variables: {
-      city: params.city,
-      activity: query.activity || null,
-      price: query.price ? Number(query.price) : null,
-    },
+    const response = await graphqlClient.query<
+      GetActivitiesByCityQuery,
+      GetActivitiesByCityQueryVariables
+    >({
+      query: GetActivitiesByCity,
+      variables: {
+        city: params.city,
+        activity: query.activity || null,
+        price: query.price ? Number(query.price) : null,
+      },
+    });
+    return {
+      props: {
+        activities: response.data.getActivitiesByCity,
+        city: params.city,
+      },
+    };
   });
-  return {
-    props: { activities: response.data.getActivitiesByCity, city: params.city },
-  };
-};
 
 export default function ActivityDetails({
   activities,

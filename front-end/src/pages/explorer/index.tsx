@@ -5,6 +5,7 @@ import {
   GetCitiesQueryVariables,
 } from '@/graphql/generated/types';
 import GetCities from '@/graphql/queries/city/getCities';
+import { safeSSR } from '@/utils';
 import { Flex } from '@mantine/core';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
@@ -13,17 +14,17 @@ interface ExplorerProps {
   cities: GetCitiesQuery['getCities'];
 }
 
-export const getServerSideProps: GetServerSideProps<
-  ExplorerProps
-> = async () => {
-  const response = await graphqlClient.query<
-    GetCitiesQuery,
-    GetCitiesQueryVariables
-  >({
-    query: GetCities,
-  });
-  return { props: { cities: response.data.getCities } };
-};
+export const getServerSideProps: GetServerSideProps<ExplorerProps> = safeSSR(
+  async () => {
+    const response = await graphqlClient.query<
+      GetCitiesQuery,
+      GetCitiesQueryVariables
+    >({
+      query: GetCities,
+    });
+    return { props: { cities: response.data.getCities } };
+  },
+);
 
 export default function Explorer({ cities }: ExplorerProps) {
   return (

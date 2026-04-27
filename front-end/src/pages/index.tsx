@@ -1,6 +1,6 @@
 import { Activity, PageTitle } from '@/components';
 import { graphqlClient } from '@/graphql/apollo';
-import { useGlobalStyles } from '@/utils';
+import { safeSSR, useGlobalStyles } from '@/utils';
 import { Button, Flex, Grid, Text } from '@mantine/core';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
@@ -15,16 +15,18 @@ interface HomeProps {
   activities: GetLatestActivitiesQuery['getLatestActivities'];
 }
 
-export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
-  const response = await graphqlClient.query<
-    GetLatestActivitiesQuery,
-    GetLatestActivitiesQueryVariables
-  >({
-    query: GetLatestActivities,
-  });
+export const getServerSideProps: GetServerSideProps<HomeProps> = safeSSR(
+  async () => {
+    const response = await graphqlClient.query<
+      GetLatestActivitiesQuery,
+      GetLatestActivitiesQueryVariables
+    >({
+      query: GetLatestActivities,
+    });
 
-  return { props: { activities: response.data.getLatestActivities } };
-};
+    return { props: { activities: response.data.getLatestActivities } };
+  },
+);
 
 export default function Home({ activities }: HomeProps) {
   const { classes } = useGlobalStyles();

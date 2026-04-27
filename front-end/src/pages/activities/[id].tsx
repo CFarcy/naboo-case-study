@@ -6,6 +6,7 @@ import {
   GetActivityQueryVariables,
 } from '@/graphql/generated/types';
 import GetActivity from '@/graphql/queries/activity/getActivity';
+import { safeSSR } from '@/utils';
 import { Badge, Flex, Grid, Group, Image, Text } from '@mantine/core';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
@@ -15,20 +16,19 @@ interface ActivityDetailsProps {
   activity: GetActivityQuery['getActivity'];
 }
 
-export const getServerSideProps: GetServerSideProps<
-  ActivityDetailsProps
-> = async ({ params, req }) => {
-  if (!params?.id || Array.isArray(params.id)) return { notFound: true };
-  const response = await graphqlClient.query<
-    GetActivityQuery,
-    GetActivityQueryVariables
-  >({
-    query: GetActivity,
-    variables: { id: params.id },
-    context: { headers: { Cookie: req.headers.cookie } },
+export const getServerSideProps: GetServerSideProps<ActivityDetailsProps> =
+  safeSSR<ActivityDetailsProps>(async ({ params, req }) => {
+    if (!params?.id || Array.isArray(params.id)) return { notFound: true };
+    const response = await graphqlClient.query<
+      GetActivityQuery,
+      GetActivityQueryVariables
+    >({
+      query: GetActivity,
+      variables: { id: params.id },
+      context: { headers: { Cookie: req.headers.cookie } },
+    });
+    return { props: { activity: response.data.getActivity } };
   });
-  return { props: { activity: response.data.getActivity } };
-};
 
 export default function ActivityDetails({ activity }: ActivityDetailsProps) {
   const router = useRouter();

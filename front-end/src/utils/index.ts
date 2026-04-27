@@ -1,5 +1,6 @@
 export * from './global.styles';
 export * from './mantine.theme';
+export * from './safeSSR';
 
 export interface City {
   nom: string;
