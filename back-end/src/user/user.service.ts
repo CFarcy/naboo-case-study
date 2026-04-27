@@ -46,6 +46,15 @@ export class UserService {
     return user;
   }
 
+  async findManyByIds(ids: readonly string[]): Promise<(User | null)[]> {
+    const validIds = ids.filter((id) => Types.ObjectId.isValid(id));
+    const users = await this.userModel
+      .find({ _id: { $in: validIds.map((id) => new Types.ObjectId(id)) } })
+      .exec();
+    const byId = new Map(users.map((user) => [String(user._id), user]));
+    return ids.map((id) => byId.get(id) ?? null);
+  }
+
   async createUser(
     data: SignUpInput & {
       role?: User['role'];
