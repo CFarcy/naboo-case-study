@@ -59,6 +59,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
     getUser()
       .then((res) => setUser(res.data?.getMe || null))
+      .catch(() => setUser(null))
       .finally(() => setIsLoading(false));
   }, [user]);
 
