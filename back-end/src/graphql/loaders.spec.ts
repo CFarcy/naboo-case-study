@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Model } from 'mongoose';
+import { NotFoundException } from '@nestjs/common';
+import { Model, Types } from 'mongoose';
 import { randomUUID } from 'crypto';
 import { UserService } from 'src/user/user.service';
 import { UserModule } from 'src/user/user.module';
@@ -48,6 +49,15 @@ describe('createLoaders.userById', () => {
     expect(findSpy).toHaveBeenCalledTimes(1);
     expect(results.map((u) => u.id)).toEqual(users.map((u) => u.id));
     findSpy.mockRestore();
+  });
+
+  it('rejects with NotFoundException when the id does not exist', async () => {
+    const loaders = createLoaders(userService);
+    const missingId = new Types.ObjectId().toString();
+
+    await expect(loaders.userById.load(missingId)).rejects.toBeInstanceOf(
+      NotFoundException,
+    );
   });
 
   it('caches repeated loads for the same id', async () => {
