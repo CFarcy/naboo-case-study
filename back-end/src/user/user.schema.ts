@@ -28,7 +28,6 @@ export class User extends Document {
   @Prop({ required: true, unique: true })
   email!: string;
 
-  @Field()
   @Prop({ required: true })
   password!: string;
 
