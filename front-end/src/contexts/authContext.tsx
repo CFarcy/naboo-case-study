@@ -53,23 +53,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [logout] = useMutation<LogoutMutation, LogoutMutationVariables>(Logout);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-
-    if (!user && token) {
-      getUser()
-        .then((res) => setUser(res.data?.getMe || null))
-        .finally(() => setIsLoading(false));
-    } else {
+    if (user) {
       setIsLoading(false);
+      return;
     }
+    getUser()
+      .then((res) => setUser(res.data?.getMe || null))
+      .catch(() => setUser(null))
+      .finally(() => setIsLoading(false));
   }, [user]);
 
   const handleSignin = async (input: SignInInput) => {
     try {
       setIsLoading(true);
-      const response = await signin({ variables: { signInInput: input } });
-      const token = response.data?.login?.access_token || '';
-      localStorage.setItem('token', token);
+      await signin({ variables: { signInInput: input } });
       await getUser().then((res) => setUser(res.data?.getMe || null));
       router.push('/profil');
     } catch (err) {
@@ -95,7 +92,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     try {
       setIsLoading(true);
       await logout();
-      localStorage.removeItem('token');
       setUser(null);
       router.push('/');
     } catch (err) {
